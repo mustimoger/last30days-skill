@@ -19,8 +19,10 @@ independent of the live trend-news alert service.
   full suite reached 84.45% coverage (81% required); existing instruction
   size and security-copy assertions exposed documentation constraints.
   The compact security text now retains the existing bearer/header contract,
-  and those focused checks pass. Final full-suite confirmation, merge and
-  installation sync are pending.
+  and those focused checks pass. The final full suite passed with 84.45%
+  coverage. Review checked transport bounds, credential stores, exclusive
+  routing, supplemental lanes and paid accounting; merge and installation
+  sync are the next steps.
 
 ## Provider setup and three-niche trial
 
