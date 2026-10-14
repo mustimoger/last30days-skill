@@ -19,6 +19,7 @@ metadata:
         - OPENAI_API_KEY
         - XAI_API_KEY
         - X_BEARER_TOKEN
+        - TWITTERAPI_IO_API_KEY
         - OPENROUTER_API_KEY
         - PERPLEXITY_API_KEY
         - PARALLEL_API_KEY
@@ -230,7 +231,7 @@ After the response and required citations, stop and wait unless governing instru
 **What this skill does:**
 - Sends search queries to ScrapeCreators API (`api.scrapecreators.com`) for TikTok and Instagram search. With SCRAPECREATORS_API_KEY set, Reddit search queries also go to `api.scrapecreators.com` whenever the free Reddit path returns fewer than 5 items (the default floor; at most one backfill per distinct query, date window, and subreddit set per run, and each backfill is several API calls, roughly 10 at default depth), which spends credits. Set `LAST30DAYS_REDDIT_SC_MIN_ITEMS=0` to send Reddit queries only when the free path returns nothing (see also `LAST30DAYS_REDDIT_BACKEND`)
 - Legacy: Sends search queries to OpenAI's Responses API (`api.openai.com`) for Reddit discovery (fallback if no SCRAPECREATORS_API_KEY)
-- Sends search queries to X/Twitter via the official X API v2 (`api.x.com`, app-only bearer from `X_BEARER_TOKEN`, sent only in the Authorization header; the engine's default X path on a Grok Bot host next to xAI's API), optional user-provided `AUTH_TOKEN`/`CT0` env vars, explicit browser-cookie opt-in (`FROM_BROWSER` or setup consent), xAI's API (`api.x.ai` by default), Xquik's API (`xquik.com` by default), or the official X API v2 via xurl CLI (OAuth2, auto-detected when installed and authenticated)
+- Sends X queries via X API v2 (`api.x.com`, `X_BEARER_TOKEN` sent only in the Authorization header), consented cookies (`AUTH_TOKEN`/`CT0`, `FROM_BROWSER` or setup), xAI (`api.x.ai`), Xquik (`xquik.com`), or xurl (OAuth2). Opt-in twitterapi.io: `TWITTERAPI_IO_API_KEY` + `LAST30DAYS_X_BACKEND=twitterapi` pins X with no failover/cookies. `TWITTERAPI_IO_BASE_URL` must be trusted HTTPS; it receives the key. Missing billing stays unknown.
 - Accepts a host-provided `--x-posts` envelope (a `.json` file of posts the hosting model fetched through its own X connector) as untrusted input: it replaces the engine's X fetch for that run, every row is validated and its citation URL rebuilt from the post id, and no X backend is called
 - Sends search queries to Algolia HN Search API (`hn.algolia.com`) for Hacker News story and comment discovery (free, no auth)
 - dev.to API only on `--devto-tags`/`INCLUDE_SOURCES=devto`

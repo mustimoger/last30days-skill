@@ -473,8 +473,9 @@ _X_PROBES: Dict[str, Callable[[Dict[str, Any]], BackendFinding]] = {
     "xquik": _key_probe("xquik", "XQUIK_API_KEY", "XQUIK_API_KEY (xquik.com)"),
     # Direct X API v2 with an app-only bearer: key presence only, no network.
     "xapi": _probe_xapi,
+    "twitterapi": _key_probe("twitterapi", "TWITTERAPI_IO_API_KEY", "TWITTERAPI_IO_API_KEY (twitterapi.io)"),
 }
-_X_PAID = {"xai", "xquik", "xapi"}
+_X_PAID = {"xai", "xquik", "xapi", "twitterapi"}
 # Opt-in backends: never auto-selected; require explicit pin.
 _X_OPT_IN = set(env.X_BACKEND_OPT_IN)
 
@@ -505,6 +506,7 @@ _X_REQUIRES: Dict[str, str] = {
     "xurl": "xurl CLI installed + OAuth2 login",
     "xquik": "XQUIK_API_KEY (xquik.com)",
     "xapi": "X_BEARER_TOKEN (X API v2)",
+    "twitterapi": "TWITTERAPI_IO_API_KEY (twitterapi.io; opt-in only)",
 }
 
 DESCRIPTORS: Dict[str, ChainDescriptor] = {

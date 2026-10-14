@@ -170,9 +170,9 @@ class TestDescriptorRegistry:
         # Auto chain order: bird first, grok excluded (opt-in only).
         assert env.X_BACKEND_ORDER == ("bird", "xai", "xurl", "xquik")
         # Grok and xapi are opt-in only off Grok Bot, not in the auto chain.
-        assert env.X_BACKEND_OPT_IN == ("grok", "xapi")
+        assert env.X_BACKEND_OPT_IN == ("grok", "xapi", "twitterapi")
         # All known backends (auto + opt-in) for pin validation.
-        assert env.X_BACKEND_KNOWN == ("bird", "xai", "xurl", "xquik", "grok", "xapi")
+        assert env.X_BACKEND_KNOWN == ("bird", "xai", "xurl", "xquik", "grok", "xapi", "twitterapi")
         # Descriptor includes all backends (auto + opt-in) for doctor visibility.
         assert tuple(s.name for s in d.backends) == env.X_BACKEND_ORDER + env.X_BACKEND_OPT_IN
         # Grok and xapi are marked opt-in in the descriptor.

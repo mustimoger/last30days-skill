@@ -72,7 +72,7 @@ KEYCHAIN_KEYS = (
     "GOOGLE_GENAI_API_KEY", "SCRAPECREATORS_API_KEY", "APIFY_API_TOKEN",
     "AUTH_TOKEN", "CT0", "BSKY_HANDLE", "BSKY_APP_PASSWORD",
     "TRUTHSOCIAL_TOKEN", "BRAVE_API_KEY", "EXA_API_KEY", "SERPER_API_KEY",
-    "OPENROUTER_API_KEY", "PERPLEXITY_API_KEY", "PARALLEL_API_KEY", "XQUIK_API_KEY",
+    "OPENROUTER_API_KEY", "PERPLEXITY_API_KEY", "PARALLEL_API_KEY", "XQUIK_API_KEY", "TWITTERAPI_IO_API_KEY",
     "XIAOHONGSHU_API_BASE", "GITHUB_TOKEN", "BRIGHTDATA_API_KEY",
     "X_BEARER_TOKEN",
 )
@@ -691,6 +691,10 @@ def get_config(policy: ConfigLoadPolicy | None = None) -> dict[str, Any]:
         ('LAST30DAYS_PERPLEXITY_DEEP_TIMEOUT_SECONDS', '600'),
         ('PARALLEL_API_KEY', None),
         ('XQUIK_API_KEY', None),
+        ('TWITTERAPI_IO_API_KEY', None),
+        ('TWITTERAPI_IO_BASE_URL', 'https://api.twitterapi.io'),
+        ('LAST30DAYS_TWITTERAPI_MAX_PAGES', '3'),
+        ('LAST30DAYS_TWITTERAPI_TIMEOUT_SECONDS', '30'),
         # Bright Data CLI. Optional: the CLI normally owns its own auth via
         # `brightdata login`, so this only matters for users who prefer an
         # explicit key in a `.env` file or the keychain. Registered here so
@@ -1284,7 +1288,7 @@ _X_BACKEND_ORDER = ("bird", "xai", "xurl", "xquik")
 # ambient bearer exported for some other tool never spends X API credits
 # every time the cookie scraper comes back empty; on an official-only
 # host it is the first rung of the auto chain instead (see _X_OFFICIAL).
-_X_BACKEND_OPT_IN = ("grok", "xapi")
+_X_BACKEND_OPT_IN = ("grok", "xapi", "twitterapi")
 
 # All known backends (auto chain + opt-in): valid values for the pin var.
 _X_BACKEND_KNOWN = _X_BACKEND_ORDER + _X_BACKEND_OPT_IN
@@ -1489,6 +1493,8 @@ def _x_backend_available(
     if backend == 'xapi':
         # Key presence only (no network); local_only needs no branch.
         return bool(config.get('X_BEARER_TOKEN'))
+    if backend == 'twitterapi':
+        return bool(config.get('TWITTERAPI_IO_API_KEY'))
     return False
 
 
@@ -1978,6 +1984,7 @@ def get_x_source_status(config: dict[str, Any], probe: bool = False) -> dict[str
         'xquik': xquik_available and xquik_working is not False,
         'grok': grok_available,
         'xapi': xapi_available,
+        'twitterapi': bool(config.get('TWITTERAPI_IO_API_KEY')),
     }
     if pin in _X_BACKEND_KNOWN:
         # Pin is exclusive: pinned backend if available, else None (no fallback).
@@ -1997,6 +2004,7 @@ def get_x_source_status(config: dict[str, Any], probe: bool = False) -> dict[str
         "xquik_available": xquik_available,
         "xquik_working": xquik_working,
         "xquik_status": xquik_status,
+        "twitterapi_available": bool(config.get('TWITTERAPI_IO_API_KEY')),
         "can_install_bird": bird_status["can_install"],
     }
 

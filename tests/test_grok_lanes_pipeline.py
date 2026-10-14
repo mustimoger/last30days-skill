@@ -20,7 +20,7 @@ def _supplements_source():
 
 def test_grok_is_handle_lane_capable():
     src = _supplements_source()
-    assert '("grok", "bird", "xapi", "xquik")' in src, (
+    assert '("grok", "bird", "xapi", "xquik", "twitterapi")' in src, (
         "grok supports from:/@ natively; leaving it out of the capable set "
         "silently drops all of Phase 2 for grok users, as it already does for "
         "xai and xurl. xapi (X API v2 bearer) runs the same lanes, after "

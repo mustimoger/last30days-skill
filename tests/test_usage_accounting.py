@@ -65,6 +65,17 @@ def test_untrusted_search_result_cannot_add_cost(journal, monkeypatch):
     assert usage.read_journal(journal)["cost_unknown"] == 0
 
 
+def test_explicit_paid_backend_on_custom_origin_is_unknown_not_free(journal, monkeypatch):
+    class Response(io.BytesIO):
+        status = 200
+
+    monkeypatch.setattr(http, "_open_request", lambda req, timeout: Response(b'{"tweets": []}'))
+    http.get("https://gateway.example/search", retries=1, usage_provider="twitterapi")
+    assert usage.read_journal(journal)["cost_unknown"] == 1
+    with sqlite3.connect(journal) as conn:
+        assert conn.execute("SELECT provider,count(*) FROM attempts GROUP BY provider").fetchall() == [("twitterapi", 1)]
+
+
 def test_parallel_requests_keep_every_charge(journal, monkeypatch):
     request(monkeypatch, "https://openrouter.ai/api/v1/chat/completions", {"usage": {"cost": 0.1}})
     with ThreadPoolExecutor(max_workers=5) as executor:
