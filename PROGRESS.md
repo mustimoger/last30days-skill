@@ -21,17 +21,50 @@ independent of the live trend-news alert service.
   The compact security text now retains the existing bearer/header contract,
   and those focused checks pass. The final full suite passed with 84.45%
   coverage. Review checked transport bounds, credential stores, exclusive
-  routing, supplemental lanes and paid accounting; merge and installation
-  sync are the next steps.
+  routing, supplemental lanes and paid accounting. PR #1 is merged at
+  `279bdba9a69fb81c4def98dad4199c96c795a971`; relevant regression checks passed
+  on main, and the installed Codex copy matches 136 source files. The previous
+  installed copy is retained for rollback.
 
 ## Provider setup and three-niche trial
 
 Existing twitterapi.io and OpenAI keys are configured privately (mode 0600),
-with the X backend pinned and all browser access disabled. No paid research
-run has started. The private trial harness reserves conservative request costs
+with the X backend pinned and all browser access disabled. The private trial
+harness reserves conservative request costs
 before transport, limits AI output to 4,096 tokens and stops at USD 1; its
 output/input limits, reservation and stop-before-transport checks passed
-without live calls. Research uses API keys and cookie-free sources.
-Do not enable scheduled research, replace alert components or delete data as
-part of this trial. Assess topic fit and added research value; a successful
-research run does not establish minute-level breaking-news latency.
+without live calls. Three real reports then completed for September 14 through
+October 14, 2026, using X, Reddit, Hacker News, GitHub and dev.to:
+
+- Enterprise agents: 109 retained items, 73.1 seconds.
+- Developer automation/Codex: 64 retained items, 84.8 seconds.
+- B2B email infrastructure: 80 retained items, 59.3 seconds.
+
+These counts are research evidence, not verified new stories. Direct Reddit
+search was blocked with HTTP 403; the engine used its public Arctic Shift
+archive/listing fallback. Codex and email X coverage was partial at the trial's
+two-page limit. YouTube and ScrapeCreators platforms were not tested.
+
+Forty twitterapi.io requests returned 412 tweets; six OpenAI calls reported
+19,776 input and 6,854 output tokens. The published-rate estimate is USD
+0.0814268 in total, or about USD 2.44 for the same three reports daily for
+30 days, excluding host-agent/web usage and infrastructure. Invoiced USD
+remains unknown; the accounting journal does not substitute this estimate.
+The conservative reservation was USD 0.1909104, below the USD 1 allowance.
+
+Nine subsequent host-web searches produced 15 source records, retained
+separately from engine discoveries and appended to each raw Markdown report.
+They verified that the Codex bridge project exists but its latest documented
+release is July 20, outside the window. The recent Outlook filter-loosening
+claim remains unverified by first-party announcements. A generic repository
+root or a fresh discussion of old requirements is not a new development;
+weakly related items grouped across platforms are not independent confirmation.
+
+Decision: retain live alerts and use this skill for separate on-demand research.
+Broad retrieval is useful, but promotions, commentary and event dates require
+review before automatic reuse. No schedule, production connector, watched
+account changes or alert replacement was enabled. B2.5/B2.8 in the companion
+project remain open; the live service started today, so the 30-day reports
+cannot establish comparative recall or alert latency. Private receipts,
+plans, caches, journals and the full assessment are under
+`/home/codex/.local/share/last30days-install/trial-20261014/`.
