@@ -109,6 +109,24 @@ These variables configure the local Go MCP server and are read from its process 
 
 ## API keys (`.env`)
 
+### twitterapi.io X backend (opt-in)
+
+Set `TWITTERAPI_IO_API_KEY` and `LAST30DAYS_X_BACKEND=twitterapi` for search,
+discovery and first-party/mention lanes through an existing twitterapi.io
+account. The pin is exclusive: errors are reported without switching to
+another X provider. It does not read browser cookies.
+
+`TWITTERAPI_IO_BASE_URL` defaults to `https://api.twitterapi.io` and must be an
+HTTPS origin without a path or embedded credentials. It receives the key.
+`LAST30DAYS_TWITTERAPI_MAX_PAGES` defaults to `3`, and
+`LAST30DAYS_TWITTERAPI_TIMEOUT_SECONDS` to `30`. Results retain full post text
+and engagement; an incomplete page sequence is reported as partial coverage.
+The API's ending-day query includes the complete requested day.
+
+The adapter logs returned tweet counts for usage estimation. The watchlist
+records requests as paid but USD cost stays unknown unless an authoritative
+charge is reported; it is never silently counted as free.
+
 The skill reads keys from a `.env` file. Two locations are supported:
 
 1. **`~/.config/last30days/.env`** at the user level (global default) - loaded by default.

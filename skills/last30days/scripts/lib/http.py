@@ -783,6 +783,7 @@ def request(
     owned_get: bool = False,
     on_retry: Callable[[], None] | None = None,
     bypass_proxy: bool = False,
+    usage_provider: str | None = None,
 ) -> Union[Dict[str, Any], str]:
     """Make an HTTP request and return JSON response.
 
@@ -984,7 +985,7 @@ def request(
         try:
             if attempt > 0 and on_retry is not None:
                 on_retry()
-            charge = usage.begin_http(url, method)
+            charge = usage.begin(usage_provider) if usage_provider else usage.begin_http(url, method)
             response_status, body, response_error = open_and_read_before_deadline(request_timeout)
             if body:
                 try:

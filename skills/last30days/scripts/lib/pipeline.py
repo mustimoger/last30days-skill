@@ -79,6 +79,7 @@ from . import (
     xai_x,
     xiaohongshu_api,
     xquik,
+    twitterapi,
     xurl_x,
     youtube_yt,
 )
@@ -4429,7 +4430,7 @@ def _run_supplemental_searches(
     pinned = runtime.x_search_backend
     if pinned:
         chain = [pinned] + [b for b in chain if b != pinned]
-    primary = next((b for b in chain if b in ("grok", "bird", "xapi", "xquik")), None)
+    primary = next((b for b in chain if b in ("grok", "bird", "xapi", "xquik", "twitterapi")), None)
 
     # Name lane (posts naming the subject in plain text, no @-mention) is
     # grok-only for now: it needs phrase-quoting and negation operators the
@@ -4524,6 +4525,16 @@ def _run_supplemental_searches(
             )
             _xapi_lane_receipt(lane_warnings)
             return items, False
+    elif primary == "twitterapi":
+        twitterapi_client = twitterapi.Client(config)
+
+        def _from_lane(hs: list, count: int, and_topic: bool = False) -> tuple[list, bool]:
+            items, failures = twitterapi_client.handles(hs, topic, from_date, to_date, count=count, and_topic=and_topic, deadline=supplemental_deadline, cancel=cancel)
+            return items, _record_handle_lane_failures("FROM", failures)
+
+        def _about_lane(hs: list, count: int) -> tuple[list, bool]:
+            items, failures = twitterapi_client.handles(hs, topic, from_date, to_date, count=count, mentions=True, deadline=supplemental_deadline, cancel=cancel)
+            return items, _record_handle_lane_failures("ABOUT", failures)
     elif primary == "xquik":
         xquik_token = env.get_xquik_token(config)
 
@@ -5004,6 +5015,9 @@ def _fetch_x_backend(backend, query, from_date, to_date, depth, config, warnings
     elif backend == "xapi":
         result = x_api.search_x(config.get("X_BEARER_TOKEN") or "", query, from_date, to_date, depth=depth, deadline=deadline, cancel=cancel)
         items = result.get("items", []) if isinstance(result, dict) else []
+    elif backend == "twitterapi":
+        result = twitterapi.Client(config).search(query, from_date, to_date, depth, deadline=deadline, cancel=cancel)
+        items = result.get("items", [])
     else:
         return [], f"unknown X backend: {backend}"
     warning = result.get("warning") if isinstance(result, dict) else None
