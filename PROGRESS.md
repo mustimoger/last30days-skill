@@ -83,8 +83,20 @@ planned private setting is effort=none to preserve the previous workload role,
 with the previous model's 32,768-token output ceiling retained explicitly.
 
 The focused provider, configuration, endpoint/proxy, usage-accounting and
-logging regression tests passed. A read-only model lookup confirmed that the
-configured OpenAI account can access gpt-6-luna. PR review/merge, installed-copy
-synchronization and the private model-pin update are pending. The three saved trial reports
-remain historical GPT-4.1 mini results, not evaluations of GPT-6 Luna or the
-newly configured sources.
+logging regression tests passed before and after merging PR #3 at
+`698070425594267cb79eba23872789d8514187bd`. The installed Codex copy is synced
+to that commit. Both private model pins now resolve to gpt-6-luna, with
+effort=none and max_output_tokens=32768. Configuration was replaced atomically
+with mode 0600; previous settings and the previous installed copy are retained
+privately for rollback.
+
+A read-only model lookup confirmed account access. One model-only JSON check
+then passed using a temporary 64-token output cap: 17 input and nine output
+tokens, one request and no retry. No research run or ScrapeCreators request
+was made. No fallback occurred in that check. The complete package suite was
+not rerun for this focused request/configuration change.
+
+Activation evidence is retained under
+`/home/codex/.local/share/last30days-install/backups/gpt6-luna-20261015T123756Z/`.
+The three saved trial reports remain historical GPT-4.1 mini results, not
+evaluations of GPT-6 Luna or the newly configured sources.
