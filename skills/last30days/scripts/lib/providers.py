@@ -286,9 +286,30 @@ class GeminiClient(ReasoningClient):
 class OpenAIClient(ReasoningClient):
     name = "openai"
 
-    def __init__(self, token: str):
+    def __init__(
+        self,
+        token: str,
+        *,
+        reasoning_effort: str | None = None,
+        max_output_tokens: str | int | None = None,
+    ):
         super().__init__()
         self.token = token
+        self.reasoning_effort = reasoning_effort or None
+        if self.reasoning_effort is not None and self.reasoning_effort not in {
+            "none", "minimal", "low", "medium", "high", "xhigh", "max"
+        }:
+            raise ValueError("LAST30DAYS_OPENAI_REASONING_EFFORT is not a supported effort")
+        self.max_output_tokens = None
+        if max_output_tokens not in (None, ""):
+            try:
+                if isinstance(max_output_tokens, bool) or not isinstance(max_output_tokens, (int, str)):
+                    raise ValueError
+                self.max_output_tokens = int(max_output_tokens)
+                if self.max_output_tokens <= 0:
+                    raise ValueError
+            except (ValueError, TypeError):
+                raise ValueError("LAST30DAYS_OPENAI_MAX_OUTPUT_TOKENS must be a positive integer") from None
 
     def generate_text(
         self,
@@ -303,8 +324,15 @@ class OpenAIClient(ReasoningClient):
             "model": model,
             "store": False,
             "input": prompt,
-            "temperature": 0,
         }
+        if self.reasoning_effort is not None:
+            payload["reasoning"] = {"effort": self.reasoning_effort}
+        # Reasoning requests reject temperature unless effort is none.
+        # Preserve existing non-reasoning callers' deterministic payload.
+        if self.reasoning_effort in (None, "none"):
+            payload["temperature"] = 0
+        if self.max_output_tokens is not None:
+            payload["max_output_tokens"] = self.max_output_tokens
         endpoint = resolve_endpoint("OPENAI_BASE_URL", OPENAI_RESPONSES_URL)
         response = self._post(
             endpoint,
@@ -502,7 +530,9 @@ def resolve_runtime(config: dict[str, Any], depth: str) -> tuple[schema.Provider
             x_search_backend=_resolve_x_backend(config),
         )
         return runtime, OpenAIClient(
-            openai_token
+            openai_token,
+            reasoning_effort=config.get("LAST30DAYS_OPENAI_REASONING_EFFORT"),
+            max_output_tokens=config.get("LAST30DAYS_OPENAI_MAX_OUTPUT_TOKENS"),
         )
 
     if provider_name == "xai":
