@@ -475,6 +475,30 @@ An explicit `--register` wins over `LAST30DAYS_REGISTER`; the environment/config
 
 When you invoke `/last30days` from Claude Code, Codex, or Gemini, the host model **is** the reasoning provider for plan + synthesis - you don't need any of the keys above unless you also run the script headlessly (cron, CI, watchlist). If one of them is configured anyway, for example `XAI_API_KEY` kept for X search or `OPENROUTER_API_KEY` kept for Perplexity, the engine still sends the topic and the shortlisted titles, snippets, and comments to that provider for reranking and fun scoring, even when you pass `--plan`. To keep that step local, leave all four key families out of every config layer (environment, `.env`, Keychain, `pass`). Local corpus evidence is always scored locally.
 
+### OpenAI reasoning and output limits
+
+`LAST30DAYS_OPENAI_REASONING_EFFORT` optionally sets the Responses API's
+`reasoning.effort` for planning, reranking and fun scoring. Supported config
+values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh` and `max`; the
+chosen model must support that value. With an effort other than `none`, the
+client omits `temperature`, which reasoning requests reject. Unset keeps the
+existing request behavior; `none` explicitly preserves a non-reasoning workload.
+
+`LAST30DAYS_OPENAI_MAX_OUTPUT_TOKENS` optionally sets a positive output-token
+limit per request. The limit includes reasoning tokens when reasoning is on.
+Unset leaves the provider's limit unchanged. A truncated response can fail JSON
+parsing and use the engine's existing, logged local-scoring fallback.
+
+For example, an explicit GPT-6 Luna migration preserving a non-reasoning role
+and the previous GPT-4.1 mini output ceiling uses:
+
+```dotenv
+LAST30DAYS_PLANNER_MODEL=gpt-6-luna
+LAST30DAYS_RERANK_MODEL=gpt-6-luna
+LAST30DAYS_OPENAI_REASONING_EFFORT=none
+LAST30DAYS_OPENAI_MAX_OUTPUT_TOKENS=32768
+```
+
 ### Agent-hosted runs must pass `--plan`
 
 When the engine detects an agent host, a research run without `--plan` exits 2 before live diagnostics or retrieval and does not call the internal planner. It prints a `[Planner] LAW 7` message telling the host model to write the plan and pass it with `--plan` (Step 0.75 and Research Execution in `references/research-runbook.md`). The engine treats a run as agent-hosted when any of these variables is set in the process environment (a `.env` line never counts):

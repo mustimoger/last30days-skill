@@ -68,3 +68,23 @@ project remain open; the live service started today, so the 30-day reports
 cannot establish comparative recall or alert latency. Private receipts,
 plans, caches, journals and the full assessment are under
 `/home/codex/.local/share/last30days-install/trial-20261014/`.
+
+## Owner-requested GPT-6 Luna settings (2026-10-15)
+
+The owner added a ScrapeCreators key and requested GPT-6 Luna for both planner
+and reranker. Key presence is confirmed without printing its value; no
+ScrapeCreators request or new research run is authorized by this settings step.
+
+The existing OpenAI client always sent temperature=0. Current official guidance
+requires an explicit reasoning setting for a compatible GPT-6 request. Added
+optional reasoning-effort and output-token settings, preserving existing
+non-reasoning payloads and rejecting invalid limits before transport. The
+planned private setting is effort=none to preserve the previous workload role,
+with the previous model's 32,768-token output ceiling retained explicitly.
+
+The focused provider, configuration, endpoint/proxy, usage-accounting and
+logging regression tests passed. A read-only model lookup confirmed that the
+configured OpenAI account can access gpt-6-luna. PR review/merge, installed-copy
+synchronization and the private model-pin update are pending. The three saved trial reports
+remain historical GPT-4.1 mini results, not evaluations of GPT-6 Luna or the
+newly configured sources.
